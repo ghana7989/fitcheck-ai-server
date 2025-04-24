@@ -1,6 +1,5 @@
-import { Request, Response, NextFunction } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { AuthService } from './users.service';
-import { AppError } from '../middlewares/error.middleware';
 
 const authService = new AuthService();
 
@@ -11,11 +10,7 @@ export const register = async (
 ) => {
   try {
     const { name, email, password } = req.body;
-
-    if (!name || !email || !password) {
-      throw new AppError('Please provide name, email and password', 400);
-    }
-
+    // Joi has already validated the request body
     const result = await authService.register(name, email, password);
     res.status(201).json(result);
   } catch (error) {
@@ -30,11 +25,7 @@ export const login = async (
 ) => {
   try {
     const { email, password } = req.body;
-
-    if (!email || !password) {
-      throw new AppError('Please provide email and password', 400);
-    }
-
+    // Joi has already validated the request body
     const result = await authService.login(email, password);
     res.json(result);
   } catch (error) {
@@ -49,11 +40,7 @@ export const refreshToken = async (
 ) => {
   try {
     const { refreshToken } = req.body;
-
-    if (!refreshToken) {
-      throw new AppError('Please provide refresh token', 400);
-    }
-
+    // Joi has already validated the request body
     const result = await authService.refreshToken(refreshToken);
     res.json(result);
   } catch (error) {

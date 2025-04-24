@@ -1,6 +1,6 @@
-import { Request, Response, NextFunction } from 'express';
-import { ClothingItemsService } from './clothingItems.service';
+import { NextFunction, Request, Response } from 'express';
 import { AppError } from '../middlewares/error.middleware';
+import { ClothingItemsService } from './clothingItems.service';
 
 const clothingItemsService = new ClothingItemsService();
 
@@ -16,12 +16,7 @@ export const createClothingItem = async (
     if (!userId) {
       throw new AppError('Authentication required', 401);
     }
-    // Basic validation (more robust validation should be added, e.g., using Zod)
-    const { imageUrl, type, color, fabric } = req.body;
-    if (!imageUrl || !type || !color || !fabric) {
-      throw new AppError('Missing required fields: imageUrl, type, color, fabric', 400);
-    }
-
+    // Joi has already validated the request body
     const newItem = await clothingItemsService.createItem(userId, req.body);
     res.status(201).json(newItem);
   } catch (error) {
@@ -93,7 +88,8 @@ export const searchClothingItems = async (
       throw new AppError('Authentication required', 401);
     }
 
-    // Extract search parameters from query string
+    // Joi has already validated the query parameters
+    // We'll still need to map req.query to a searchQuery object
     const { type, color, fabric, occasionTags, seasonTags, weatherFit, styleTags } = req.query;
 
     // Prepare search query for the service

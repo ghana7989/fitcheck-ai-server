@@ -6,6 +6,7 @@ import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import { config } from './config';
 import { errorHandler } from './middlewares/error.middleware';
+import { handleValidationError } from './middlewares/validation-error.middleware';
 import authRoutes from './users/users.routes';
 import itemRoutes from './clothingItems/clothingItems.routes';
 
@@ -46,6 +47,9 @@ app.get('/health', (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/items', itemRoutes);
 // app.use('/api/outfits', outfitRoutes);
+
+// Validation error handling - must be before the main error handler
+app.use(handleValidationError);
 
 // Error handling
 app.use(errorHandler);
