@@ -1,9 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import { config } from '../config';
-import { TokenPayload } from '../types';
-import { User } from '../models/user.model';
-
+import { User } from '@/users/user.model';
+import { TokenPayload } from '@/users/users.types';
 declare global {
   namespace Express {
     interface Request {

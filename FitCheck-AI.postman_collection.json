@@ -1,0 +1,397 @@
+{
+	"info": {
+		"_postman_id": "089da2b1-d2a6-4355-bfeb-b5bb6e980815",
+		"name": "FitCheck-AI",
+		"description": "API collection for FitCheck-AI wardrobe application",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "11448418"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Register",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Parse the response",
+									"let response = pm.response.json();",
+									"",
+									"// Check and set accessToken",
+									"if (response.accessToken) {",
+									"    pm.environment.set(\"accessToken\", response.accessToken);",
+									"    console.log(\"Access token set in environment.\");",
+									"} else {",
+									"    console.warn(\"Access token not found in response.\");",
+									"}",
+									"",
+									"// Check and set refreshToken",
+									"if (response.refreshToken) {",
+									"    pm.environment.set(\"refreshToken\", response.refreshToken);",
+									"    console.log(\"Refresh token set in environment.\");",
+									"} else {",
+									"    console.warn(\"Refresh token not found in response.\");",
+									"}",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Test User\",\n    \"email\": \"test@example.com\",\n    \"password\": \"password123\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/register",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "auth", "register"]
+						},
+						"description": "Register a new user"
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Parse the response",
+									"let response = pm.response.json();",
+									"",
+									"// Check and set accessToken",
+									"if (response.accessToken) {",
+									"    pm.environment.set(\"accessToken\", response.accessToken);",
+									"    console.log(\"Access token set in environment.\");",
+									"} else {",
+									"    console.warn(\"Access token not found in response.\");",
+									"}",
+									"",
+									"// Check and set refreshToken",
+									"if (response.refreshToken) {",
+									"    pm.environment.set(\"refreshToken\", response.refreshToken);",
+									"    console.log(\"Refresh token set in environment.\");",
+									"} else {",
+									"    console.warn(\"Refresh token not found in response.\");",
+									"}",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"test@example.com\",\n    \"password\": \"password123\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/login",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "auth", "login"]
+						},
+						"description": "Login with existing credentials"
+					},
+					"response": []
+				},
+				{
+					"name": "Refresh Token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const response = pm.response.json();",
+									"if (response.accessToken) {",
+									"    pm.environment.set('accessToken', response.accessToken);",
+									"    // Set expiry to 14 minutes (token expires in 15)",
+									"    pm.environment.set('tokenExpiryTime', new Date().getTime() + 14 * 60 * 1000);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"refreshToken\": \"{{refreshToken}}\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/refresh-token",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "auth", "refresh-token"]
+						},
+						"description": "Get new access token using refresh token"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Clothing Items",
+			"item": [
+				{
+					"name": "Create Item",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let response = pm.response.json();",
+									"",
+									"if (response._id) {",
+									"    pm.environment.set(\\\"itemId\\\", response._id);",
+									"    console.log(\\\"Created item ID set in environment: \\\" + response._id);",
+									"} else {",
+									"    console.warn(\\\"Item ID not found in response.\\\");",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"imageUrl\": \"https://example.com/image.jpg\",\n    \"type\": \"T-Shirt\",\n    \"color\": \"Blue\",\n    \"fabric\": \"Cotton\",\n    \"occasionTags\": [\"Casual\", \"Summer\"],\n    \"seasonTags\": [\"Spring\", \"Summer\"],\n    \"weatherFit\": [\"Warm\", \"Sunny\"],\n    \"styleTags\": [\"Basic\"]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/items",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "items"]
+						},
+						"description": "Create a new clothing item"
+					},
+					"response": []
+				},
+				{
+					"name": "Get All User Items",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/items",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "items"]
+						},
+						"description": "Get all clothing items for the authenticated user"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Item by ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/items/{{itemId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "items", "{{itemId}}"]
+						},
+						"description": "Get a specific clothing item by its ID (uses `itemId` env variable set by 'Create Item')"
+					},
+					"response": []
+				},
+				{
+					"name": "Search Items",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/items/search?type=T-Shirt&color=Blue&occasionTags=Casual&seasonTags=Summer",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "items", "search"],
+							"query": [
+								{
+									"key": "type",
+									"value": "T-Shirt",
+									"description": "Filter by item type"
+								},
+								{
+									"key": "color",
+									"value": "Blue",
+									"description": "Filter by color"
+								},
+								{
+									"key": "fabric",
+									"value": "Cotton",
+									"description": "Filter by fabric",
+									"disabled": true
+								},
+								{
+									"key": "occasionTags",
+									"value": "Casual",
+									"description": "Filter by occasion tag (can be repeated for multiple tags)"
+								},
+								{
+									"key": "seasonTags",
+									"value": "Summer",
+									"description": "Filter by season tag (can be repeated for multiple tags)"
+								},
+								{
+									"key": "weatherFit",
+									"value": "Warm",
+									"description": "Filter by weather fit tag (can be repeated for multiple tags)",
+									"disabled": true
+								},
+								{
+									"key": "styleTags",
+									"value": "Basic",
+									"description": "Filter by style tag (can be repeated for multiple tags)",
+									"disabled": true
+								}
+							]
+						},
+						"description": "Search for clothing items based on various criteria"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Item",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/items/{{itemId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "items", "{{itemId}}"]
+						},
+						"description": "Delete a specific clothing item by its ID (uses `itemId` env variable set by 'Create Item')"
+					},
+					"response": []
+				}
+			],
+			"description": "Operations related to clothing items"
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"exec": [
+					"// Auto-refresh token if expired",
+					"if (pm.environment.get('accessToken') && pm.environment.get('refreshToken')) {",
+					"    const expiryTime = pm.environment.get('tokenExpiryTime');",
+					"    if (expiryTime && new Date().getTime() > expiryTime) {",
+					"        pm.sendRequest({",
+					"            url: pm.environment.get('baseUrl') + '/api/auth/refresh-token',",
+					"            method: 'POST',",
+					"            header: {",
+					"                'Content-Type': 'application/json'",
+					"            },",
+					"            body: {",
+					"                mode: 'raw',",
+					"                raw: JSON.stringify({",
+					"                    refreshToken: pm.environment.get('refreshToken')",
+					"                })",
+					"            }",
+					"        }, function (err, res) {",
+					"            if (!err && res.code === 200) {",
+					"                const response = res.json();",
+					"                pm.environment.set('accessToken', response.accessToken);",
+					"                // Set expiry to 14 minutes (token expires in 15)",
+					"                pm.environment.set('tokenExpiryTime', new Date().getTime() + 14 * 60 * 1000);",
+					"            }",
+					"        });",
+					"    }",
+					"}"
+				],
+				"type": "text/javascript"
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8080",
+			"type": "string"
+		}
+	]
+}

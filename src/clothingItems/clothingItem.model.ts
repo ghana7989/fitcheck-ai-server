@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { IClothingItem } from '../types';
+import { IClothingItem } from './clothingItems.types';
 
 const clothingItemSchema = new mongoose.Schema<IClothingItem>({
   userId: {

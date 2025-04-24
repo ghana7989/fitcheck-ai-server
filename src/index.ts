@@ -6,7 +6,8 @@ import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import { config } from './config';
 import { errorHandler } from './middlewares/error.middleware';
-import authRoutes from './routes/auth.routes';
+import authRoutes from './users/users.routes';
+import itemRoutes from './clothingItems/clothingItems.routes';
 
 // Initialize express app
 const app = express();
@@ -43,7 +44,7 @@ app.get('/health', (req, res) => {
 
 // API routes
 app.use('/api/auth', authRoutes);
-// app.use('/api/items', itemRoutes);
+app.use('/api/items', itemRoutes);
 // app.use('/api/outfits', outfitRoutes);
 
 // Error handling

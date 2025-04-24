@@ -1,9 +1,8 @@
 import jwt, { SignOptions } from 'jsonwebtoken';
-import { Types } from 'mongoose';
-import { User } from '../models/user.model';
 import { config } from '../config';
-import { TokenPayload, AuthResponse } from '../types';
 import { AppError } from '../middlewares/error.middleware';
+import { User } from './user.model';
+import { AuthResponse, TokenPayload } from './users.types';
 
 export class AuthService {
   private generateTokens(payload: TokenPayload) {
