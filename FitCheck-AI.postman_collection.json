@@ -324,6 +324,30 @@
 					"response": []
 				},
 				{
+					"name": "Get Available Filters",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/items/filters",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "items", "filters"]
+						},
+						"description": "Get all unique filter values (types, colors, fabrics, tags) for the authenticated user's items."
+					},
+					"response": []
+				},
+				{
 					"name": "Delete Item",
 					"request": {
 						"auth": {

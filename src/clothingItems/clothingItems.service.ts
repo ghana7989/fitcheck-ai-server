@@ -69,4 +69,37 @@ export class ClothingItemsService {
     const items = await ClothingItem.find(filter).sort({ createdAt: -1 });
     return items;
   }
+
+  async getAvailableFiltersForUser(userId: string): Promise<Record<string, string[]>> {
+    try {
+      // Fetch distinct simple fields
+      const [types, colors, fabrics] = await Promise.all([
+        ClothingItem.distinct('type', { userId }),
+        ClothingItem.distinct('color', { userId }),
+        ClothingItem.distinct('fabric', { userId })
+      ]);
+
+      // Fetch all items to aggregate tags
+      const items = await ClothingItem.find({ userId }).select('occasionTags seasonTags weatherFit styleTags');
+
+      // Aggregate and deduplicate tags
+      const occasionTags = [...new Set(items.flatMap(item => item.occasionTags || []))];
+      const seasonTags = [...new Set(items.flatMap(item => item.seasonTags || []))];
+      const weatherFit = [...new Set(items.flatMap(item => item.weatherFit || []))];
+      const styleTags = [...new Set(items.flatMap(item => item.styleTags || []))];
+
+      return {
+        types,
+        colors,
+        fabrics,
+        occasionTags,
+        seasonTags,
+        weatherFit,
+        styleTags,
+      };
+    } catch (error: any) {
+      console.error('Error fetching available filters:', error);
+      throw new AppError('Failed to fetch available filters', 500);
+    }
+  }
 } 

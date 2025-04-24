@@ -113,4 +113,22 @@ export const searchClothingItems = async (
   } catch (error) {
     next(error);
   }
+};
+
+export const getAvailableFilters = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const userId = req.user?.userId;
+    if (!userId) {
+      throw new AppError('Authentication required', 401);
+    }
+
+    const filters = await clothingItemsService.getAvailableFiltersForUser(userId);
+    res.json(filters);
+  } catch (error) {
+    next(error);
+  }
 }; 

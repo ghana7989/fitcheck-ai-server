@@ -4,7 +4,8 @@ import {
     getClothingItem, 
     getAllUserClothingItems, 
     deleteClothingItem,
-    searchClothingItems 
+    searchClothingItems,
+    getAvailableFilters
 } from './clothingItems.controller';
 import { authenticate } from '../middlewares/auth.middleware'; // Assuming this exists
 
@@ -15,6 +16,7 @@ router.use(authenticate);
 
 // Routes
 router.post('/', createClothingItem);         // Create a new item
+router.get('/filters', getAvailableFilters); // Get available filters for the user
 router.get('/search', searchClothingItems);  // Search items (must be before /:id)
 router.get('/', getAllUserClothingItems);     // Get all items for the user
 router.get('/:id', getClothingItem);        // Get a specific item by ID
